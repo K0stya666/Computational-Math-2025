@@ -3,16 +3,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.differentiate import derivative
 
-dx = 0.00001
 
 class Equation:
     """
     Класс представляющий мат. функцию и её описание
     """
 
-    def __init__(self, function: Callable, text: str):
+    def __init__(self, function: Callable, description: str):
         self.function = function
-        self.text = text
+        self.description = description
 
 
     def draw(self, a: float, b: float):
@@ -29,7 +28,7 @@ class Equation:
         plt.xlabel('X')
         plt.ylabel('Y')
         plt.axhline(y=0, color='gray', label='y = 0')
-        plt.plot(x, func, 'blue', label=self.text)
+        plt.plot(x, func, 'blue', label=self.description)
         plt.legend(loc='upper left')
         plt.savefig('graph.png')
         plt.show()
@@ -39,7 +38,14 @@ class Equation:
         Проверяет наличие корня функции на отрезке [a, b] по признаку смены знака.
         :param a: Левая граница отрезка.
         :param b: Правая граница отрезка.
-        :return: True, если функция меняет знак на концах отрезка и производная в точке left не равна нулю.
+        :return: True, если функция имеет решения на выбранном отрезке.
         """
-        return (self.function(a) * self.function(b) < 0) \
-            and (derivative(self.function, a, dx) * derivative(self.function, b, dx) > 0)
+        f = self.function
+
+        fa = f(a)
+        fb = f(b)
+
+        fa_ = derivative(f, a).df
+        fb_ = derivative(f, b).df
+
+        return (fa * fb < 0) and (fa_ * fb_ > 0)
