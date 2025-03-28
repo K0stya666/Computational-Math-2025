@@ -1,7 +1,5 @@
 import numpy as np
 from scipy.differentiate import derivative
-from dto import equation
-from dto.equation import Equation
 from dto.result import Result
 from methods.method import Method, MAX_ITERATIONS
 
@@ -11,26 +9,6 @@ class SimpleIterationsMethod(Method):
     Класс для реализации метода простой итерации
     """
     name = 'Метод простой итерации'
-
-    def __init__(self, equation: Equation, a: float, b: float,
-                 eps: float, decimal_places: int, log: list):
-        self.equation = equation
-        self.a = a
-        self.b = b
-        self.eps = eps
-        self.decimal_places = decimal_places
-        self.log = log
-
-        super().__init__(equation, a, b, eps, decimal_places, log)
-
-    def check(self):
-        """
-        Проверка наличия корня на заданном отрезке.
-        :return: Кортеж (успешность проверки, сообщение)
-        """
-        if not self.equation.root_exists(self.a, self.b):
-            return False, 'Корень на заданном промежутке отсутствует или их > 2'
-        return True, ''
 
     def solve(self) -> Result:
         """
@@ -42,16 +20,17 @@ class SimpleIterationsMethod(Method):
         :return: Результат решения — объект Result
         """
         f = self.equation.function
-        f_ = equation.snd_derivative
         a = self.a
         b = self.b
         eps = self.eps
-        log = self.log
         iterations = 0
 
-        max_derivative = max(abs(f_(a)), abs(f_(b)))
+        fa_ = derivative(f, a).df
+        fb_ = derivative(f, b).df
+
+        max_derivative = max(abs(fa_), abs(fb_))
         _lambda = 1 / max_derivative
-        if f_(a) > 0: _lambda *= -1
+        if fa_ > 0: _lambda *= -1
 
         phi = lambda x: x + _lambda * f(x)
         phi_ = lambda x: derivative(phi, x).df
@@ -70,18 +49,9 @@ class SimpleIterationsMethod(Method):
             x = phi(prev_x)
             delta = abs(x - prev_x)
 
-            log.append({
-                'x_i': prev_x,
-                'x_(i+1)': x,
-                'phi(x_(i+1))': phi(x),
-                'f(x_(i+1))': f(x),
-                'delta': delta
-            })
-
             if delta < eps:
                 break
 
             prev_x = x
 
-        return Result(x, iterations, log)
-
+        return Result(x, iterations)
