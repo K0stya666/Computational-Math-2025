@@ -1,4 +1,3 @@
-from dto.equation import Equation
 from dto.result import Result
 from methods.method import Method, MAX_ITERATIONS
 
@@ -8,26 +7,6 @@ class ChordMethod(Method):
     Класс для реализации метода хорд
     """
     name = 'Метод хорд'
-
-    def __init__(self, equation: Equation, a: float, b: float,
-                 eps: float, decimal_places: int, log: list):
-        self.equation = equation
-        self.a = a
-        self.b = b
-        self.eps = eps
-        self.decimal_places = decimal_places
-        self.log = log
-
-        super().__init__(equation, a, b, eps, decimal_places, log)
-
-    def check(self):
-        """
-        Проверка наличия корня на заданном отрезке.
-        :return: Кортеж (успешность проверки, сообщение)
-        """
-        if not self.equation.root_exists(self.a, self.b):
-            return False, 'Корень на заданном промежутке отсутствует или их > 2'
-        return True, ''
 
     def solve(self) -> Result:
         """
@@ -42,7 +21,6 @@ class ChordMethod(Method):
         f = self.equation.function
         a, b = self.a, self.b
         eps = self.eps
-        log = self.log
         iterations = 0
 
         # Формула хорд
@@ -62,20 +40,10 @@ class ChordMethod(Method):
             new_x = (a * f(b) - b * f(a)) / (f(b) - f(a))
             delta = abs(new_x - x)
 
-            log.append({
-                'a': a,
-                'b': b,
-                'x': x,
-                'f(a)': f(a),
-                'f(b)': f(b),
-                'f(x)': f(x),
-                'delta': delta
-            })
-
             # Проверяем достижение необходимой точности
             if delta < eps:
                 break
 
             x = new_x
 
-        return Result(x, iterations, log)
+        return Result(x, iterations)
