@@ -189,14 +189,14 @@ def main():
         desc2 = sys[1].description
         desc = desc1 + " and " + desc2
 
-        print("Введите начальные приближения x0, y0 (через пробел):")
-        x0, y0 = map(float, input().split())
+        # print("Введите начальные приближения x0, y0 (через пробел):")
+        # x0, y0 = map(float, input().split())
 
         print("Введите точность eps:")
         eps = float(input("eps = "))
 
         # Метод Ньютона для системы
-        methode = methods[4](sys, x0, y0, eps)
+        methode = methods[4](sys, eps)
         res = methode.solve()
 
         iters = res.iterations

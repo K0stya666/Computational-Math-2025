@@ -4,6 +4,26 @@ from dto.result import Result
 from methods.method import MAX_ITERATIONS
 
 
+def find_initial_approximation(system, x_range=(-2, 2), y_range=(-2, 2), step=0.1, threshold=0.5):
+    """
+    Автоматически ищет приближение (x, y)
+    :param system: система уравнений
+    :param x_range: диапазон по x
+    :param y_range: диапазон по y
+    :param step: шаг сетки
+    :param threshold: максимальное значение |f(x, y)| и |g(x, y)| для выбора точки
+    :return: (x0, y0) — подходящее приближение
+    """
+    f = system[0].function
+    g = system[1].function
+
+    for x in np.arange(x_range[0], x_range[1], step):
+        for y in np.arange(y_range[0], y_range[1], step):
+            if abs(f(x, y)) < threshold and abs(g(x, y)) < threshold:
+                return x, y
+
+    raise Exception("Не удалось найти начальное приближение. Попробуйте увеличить диапазон или threshold.")
+
 def create_jacobian(x, y, system, h=1e-6):
     """
     Строит якобиан для системы из двух уравнений
@@ -36,10 +56,9 @@ class NewtonMethod:
     """
     name = "Метод Ньютона"
 
-    def __init__(self, system: list[Equation], x0: float, y0: float,  eps: float):
+    def __init__(self, system: list[Equation], eps: float):
         self.system = system
-        self.x0 = x0
-        self.y0 = y0
+        self.x0, self.y0 = find_initial_approximation(system)
         self.eps = eps
 
 
