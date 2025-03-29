@@ -12,8 +12,8 @@ def create_jacobian(x, y, system, h=1e-6):
     :param h: шаг для численного дифференцирования (по умолчанию 1e-6)
     :return: якобиан 2x2
     """
-    f = system[0]
-    g = system[1]
+    f = system[0].function
+    g = system[1].function
 
     # частные производные по x, y для функции f(x, y)
     fx_ = (f(x + h, y) - f(x, y)) / h
@@ -62,19 +62,22 @@ class NewtonMethod:
             iteration += 1
 
             jac = create_jacobian(v[0], v[1], system)
-            F = np.array(system)
+
+            f = system[0].function(v[0], v[1])
+            g = system[1].function(v[0], v[1])
+
+            F = [f, g]
 
             try:
-                delta = np.linalg.solve(jac, -F)
+                delta = np.linalg.solve(np.array(jac), -1 * np.array(F))
             except np.linalg.LinAlgError:
                 raise Exception('Ошибка применения метода: Якобиан вырожден.')
 
-            next_v = v + delta
-
-            # Проверяем условие сходимости
-            if np.max(np.abs(next_v - v)) < eps:
+            if np.max(np.abs(delta)) < eps:
                 break
 
-            v = next_v.copy()
+            next_v = v + delta
+
+            v = next_v.tolist()
 
         return Result(v[0], iteration, v[1])

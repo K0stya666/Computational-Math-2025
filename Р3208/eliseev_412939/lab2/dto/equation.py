@@ -1,6 +1,4 @@
 from typing import Callable
-import numpy as np
-import matplotlib.pyplot as plt
 from scipy.differentiate import derivative
 
 
@@ -13,25 +11,6 @@ class Equation:
         self.function = function
         self.description = description
 
-
-    def draw(self, a: float, b: float):
-        """
-        Строит график функции на отрезке [a, b].
-        :param a: Левая граница отображаемого интервала.
-        :param b: Правая граница отображаемого интервала.
-        """
-        x = np.linspace(a, b)
-        func = np.vectorize(self.function)(x)
-
-        plt.title = 'График заданной функции'
-        plt.grid(True, which='both')
-        plt.xlabel('X')
-        plt.ylabel('Y')
-        plt.axhline(y=0, color='gray', label='y = 0')
-        plt.plot(x, func, 'blue', label=self.description)
-        plt.legend(loc='upper left')
-        plt.savefig('graph.png')
-        plt.show()
 
     def root_exists(self, a: float, b: float):
         """
