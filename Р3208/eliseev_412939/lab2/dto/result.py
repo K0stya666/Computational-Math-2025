@@ -8,8 +8,8 @@ class Result:
     Класс-результат для хранения данных после численного решения уравнения или системы.
     """
     x: float
-    y: Optional[float]
     iterations: int
+    y: Optional[float]
 
     def __str__(self):
         parts = [f"Корень: x = {self.x}"]
