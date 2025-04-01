@@ -90,7 +90,7 @@ class NewtonMethod:
             try:
                 delta = np.linalg.solve(np.array(jac), -1 * np.array(F))
             except np.linalg.LinAlgError:
-                raise Exception('Ошибка применения метода: Якобиан вырожден.')
+                raise Exception(f'Ошибка применения метода: Якобиан вырожден. Итерация->{iteration} Якобиан->{jac}')
 
             if np.max(np.abs(delta)) < eps:
                 break
