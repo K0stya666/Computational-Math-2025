@@ -4,8 +4,7 @@ def load_from_keyboard():
     n = int(input("Введите количество точек данных: "))
     xs, ys = [], []
     for i in range(n):
-        x = float(input(f"x[{i}]: "))
-        y = float(input(f"y[{i}]: "))
+        x, y = map(float, input(f"x[{i}] и y[{i}]: ").split())
         xs.append(x)
         ys.append(y)
     return np.array(xs), np.array(ys)
